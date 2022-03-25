@@ -1,5 +1,7 @@
-#include <stdio.h>
+#pragma once
+
 #include <iostream>
+#include <stdio.h>
 
 #define MEMORY_SIZE 100
 
@@ -57,123 +59,133 @@
 int memory[MEMORY_SIZE];
 int flag_register;
 
-int sc_memoryInit() {
-  for (int i = 0; i < MEMORY_SIZE; i++)
-    memory[i] = 0;
+int sc_memoryInit()
+{
+    for (int i = 0; i < MEMORY_SIZE; i++)
+        memory[i] = 0;
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_memorySet(int address, int value) {
-  if (address >= MEMORY_SIZE || address < 0) {
-    flag_register = flag_register | (1 << OUT_OF_MEMORY);
-    return EXIT_FAILURE;
-  }
+int sc_memorySet(int address, int value)
+{
+    if (address >= MEMORY_SIZE || address < 0) {
+        flag_register = flag_register | (1 << OUT_OF_MEMORY);
+        return EXIT_FAILURE;
+    }
 
-  memory[address] = value;
+    memory[address] = value;
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_memoryGet(int address, int *value) {
-  if (address >= MEMORY_SIZE || address < 0) {
-    flag_register = flag_register | (1 << OUT_OF_MEMORY);
-    return EXIT_FAILURE;
-  }
+int sc_memoryGet(int address, int* value)
+{
+    if (address >= MEMORY_SIZE || address < 0) {
+        flag_register = flag_register | (1 << OUT_OF_MEMORY);
+        return EXIT_FAILURE;
+    }
 
-  *value = memory[address];
+    *value = memory[address];
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_memorySave(char *filename) {
-  FILE *outFile;
-  outFile = fopen(filename, "wb");
-  fwrite(memory, sizeof(int), MEMORY_SIZE, outFile);
-  fclose(outFile);
+int sc_memorySave(char* filename)
+{
+    FILE* outFile;
+    outFile = fopen(filename, "wb");
+    fwrite(memory, sizeof(int), MEMORY_SIZE, outFile);
+    fclose(outFile);
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_memoryLoad(char *filename) {
-  FILE *inFile;
-  inFile = fopen(filename, "rb");
-  if (inFile == NULL)
-    return EXIT_FAILURE;
+int sc_memoryLoad(char* filename)
+{
+    FILE* inFile;
+    inFile = fopen(filename, "rb");
+    if (inFile == NULL)
+        return EXIT_FAILURE;
 
-  fread(memory, sizeof(int), MEMORY_SIZE, inFile);
-  fclose(inFile);
+    fread(memory, sizeof(int), MEMORY_SIZE, inFile);
+    fclose(inFile);
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_regInit() {
-  if (&flag_register != NULL)
-    flag_register = flag_register & 0;
-  else
-    return EXIT_FAILURE;
+int sc_regInit()
+{
+    if (&flag_register != NULL)
+        flag_register = flag_register & 0;
+    else
+        return EXIT_FAILURE;
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_regSet(int registr, int value) {
-  if (!(registr >= OVERFLOW || registr <= INVALID_COMMAND))
-    return EXIT_FAILURE;
-  if (!(value >= 0 || value <= 1))
-    return EXIT_FAILURE;
+int sc_regSet(int registr, int value)
+{
+    if (!(registr >= OVERFLOW || registr <= INVALID_COMMAND))
+        return EXIT_FAILURE;
+    if (!(value >= 0 || value <= 1))
+        return EXIT_FAILURE;
 
-  if (value) {
-    flag_register = flag_register | (1 << (registr));
-  } else {
-    flag_register = flag_register & (~(1 << (registr)));
-  }
+    if (value) {
+        flag_register = flag_register | (1 << (registr));
+    } else {
+        flag_register = flag_register & (~(1 << (registr)));
+    }
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_regGet(int registr, int *value) {
-  if (!(registr >= OVERFLOW || registr <= INVALID_COMMAND))
-    return EXIT_FAILURE;
+int sc_regGet(int registr, int* value)
+{
+    if (!(registr >= OVERFLOW || registr <= INVALID_COMMAND))
+        return EXIT_FAILURE;
 
-  *value = (flag_register >> registr) & 1;
+    *value = (flag_register >> registr) & 1;
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_commandEncode(int command, int operand, int *value) {
-  if (!((command >= READ && command <= WRITE) ||
-        (command >= LOAD && command <= STORE) ||
-        (command >= ADD && command <= MUL) ||
-        (command >= JUMP && command <= SUBC_C)))
-    return EXIT_FAILURE;
-  if (!(operand >= 0 && operand <= 127))
-    return EXIT_FAILURE;
+int sc_commandEncode(int command, int operand, int* value)
+{
+    if (!((command >= READ && command <= WRITE)
+          || (command >= LOAD && command <= STORE)
+          || (command >= ADD && command <= MUL)
+          || (command >= JUMP && command <= SUBC_C)))
+        return EXIT_FAILURE;
+    if (!(operand >= 0 && operand <= 127))
+        return EXIT_FAILURE;
 
-  *value = (command << 7) | operand;
+    *value = (command << 7) | operand;
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 
-int sc_commandDecode(int value, int *command, int *operand) {
-  int _command = value >> 7;
+int sc_commandDecode(int value, int* command, int* operand)
+{
+    int _command = value >> 7;
 
-  if (!((_command >= READ && _command <= WRITE) ||
-        (_command >= LOAD && _command <= STORE) ||
-        (_command >= ADD && _command <= MUL) ||
-        (_command >= JUMP && _command <= SUBC_C))) {
-    flag_register = flag_register | (1 << INVALID_COMMAND);
-    return EXIT_FAILURE;
-  }
+    if (!((_command >= READ && _command <= WRITE)
+          || (_command >= LOAD && _command <= STORE)
+          || (_command >= ADD && _command <= MUL)
+          || (_command >= JUMP && _command <= SUBC_C))) {
+        flag_register = flag_register | (1 << INVALID_COMMAND);
+        return EXIT_FAILURE;
+    }
 
-  int _operand = value & 127;
+    int _operand = value & 127;
 
-  if (!(_operand >= 0 && _operand <= 127)) {
-    flag_register = flag_register | (1 << INVALID_COMMAND);
-    return EXIT_FAILURE;
-  }
+    if (!(_operand >= 0 && _operand <= 127)) {
+        flag_register = flag_register | (1 << INVALID_COMMAND);
+        return EXIT_FAILURE;
+    }
 
-  *command = _command;
-  *operand = _operand;
+    *command = _command;
+    *operand = _operand;
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

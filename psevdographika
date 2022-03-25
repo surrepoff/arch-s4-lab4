@@ -1,0 +1,75 @@
+echo -e "\E[H\E[J"
+echo -e -n "\E[10;5H\E(0\u250C\E(B"
+
+#### UP
+
+index=0
+
+while [[ $index < 8 ]]
+
+do
+
+echo -e -n "\E(0\u2500\E(B"
+let "index=index+1"
+
+done
+
+echo -e -n "\E(0\u2510\E(B"
+
+#### LEFT
+
+index=11
+
+while [[ $index < 19 ]]
+
+do
+
+echo -e "\E[$index;5H\E(0\u2502\E(B"
+let "index=index+1"
+
+done
+
+##### RIGHT
+
+index=11
+
+while [[ $index < 19 ]]
+
+do
+
+echo -e "\E[$index;14H\E(0\u2502\E(B"
+let "index=index+1"
+
+done
+
+
+##### DOWN
+
+echo -e -n "\E[19;5H\E(0\u2514\E(B"
+
+index=0
+
+while [[ $index < 8 ]]
+
+do
+
+echo -e -n "\E(0\u2500\E(B"
+let "index=index+1"
+
+done
+
+echo -e -n "\E(0\u2518\E(B"
+
+##### NUMBER
+
+echo -e -n "\E[11;6H\E(0  \u2588\u2588\u2588\u2588  \E(B"
+echo -e -n "\E[12;6H\E(0 \u2588    \u2588 \E(B"
+echo -e -n "\E[13;6H\E(0 \u2588    \u2588 \E(B"
+echo -e -n "\E[14;6H\E(0 \u2588    \u2588 \E(B"
+echo -e -n "\E[15;6H\E(0 \u2588    \u2588 \E(B"
+echo -e -n "\E[16;6H\E(0 \u2588    \u2588 \E(B"
+echo -e -n "\E[17;6H\E(0 \u2588    \u2588 \E(B"
+echo -e -n "\E[18;6H\E(0  \u2588\u2588\u2588\u2588  \E(B"
+
+echo -e "\E[20;1H"
+
