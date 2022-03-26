@@ -170,13 +170,12 @@ int bc_printbigchar(int* A, int x, int y, int fg_color, int bg_color)
             part = 1;
 
         for (int j = 1; j <= 8; j++) {
-            if (A[part] % 2)
+            if (A[part] & 2)
                 bc_printA("\u2588");
             else
                 bc_printA(" ");
 
             A[part] = A[part] >> 1;
-            mt_gotoXY(x, y + j);
         }
 
         x++;
@@ -194,11 +193,11 @@ int bc_setbigcharpos(int* big, int x, int y, int value)
     if ((value != 0 && value != 1) || x < 1 || x > 8 || y < 1 || y > 8)
         return -1;
     if (value == 1) {
-        big[y / 5] |= 1 << ((y - 1) * 8 + x - 1);
+        big[x / 5] |= 1 << ((x - 1) * 8 + (y - 1));
         return 0;
     }
     if (value == 0) {
-        big[y / 5] &= ~(1 << ((y - 1) * 8 + x - 1));
+        big[x / 5] &= ~(1 << ((x - 1) * 8 + (y - 1)));
         return 0;
     }
     return -1;
@@ -208,7 +207,7 @@ int bc_getbigcharpos(int* big, int x, int y, int* value)
 {
     if (x < 1 || x > 8 || y < 1 || y > 8)
         return -1;
-    *value = (big[y / 5] >> ((y - 1) * 8 + x - 1)) & 0x1;
+    *value = (big[x / 5] >> ((x - 1) * 8 + (y - 1))) & 0x1;
     return 0;
 }
 
